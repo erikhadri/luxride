@@ -1,82 +1,114 @@
-2.0.1 / 2021-01-03
+1.0.0 / 2024-08-31
 ==================
 
-  * Fix returning values from `Object.prototype`
+  * Drop support for node <18
+  * Added an option preferred encodings array #59
 
-2.0.0 / 2020-04-19
+0.6.3 / 2022-01-22
 ==================
 
-  * Drop support for Node.js 0.6
-  * Fix messaging casing of `418 I'm a Teapot`
-  * Remove code 306
-  * Remove `status[code]` exports; use `status.message[code]`
-  * Remove `status[msg]` exports; use `status.code[msg]`
-  * Rename `425 Unordered Collection` to standard `425 Too Early`
-  * Rename `STATUS_CODES` export to `message`
-  * Return status message for `statuses(code)` when given code
+  * Revert "Lazy-load modules from main entry point"
 
-1.5.0 / 2018-03-27
+0.6.2 / 2019-04-29
 ==================
 
-  * Add `103 Early Hints`
+  * Fix sorting charset, encoding, and language with extra parameters
 
-1.4.0 / 2017-10-20
+0.6.1 / 2016-05-02
 ==================
 
-  * Add `STATUS_CODES` export
+  * perf: improve `Accept` parsing speed
+  * perf: improve `Accept-Charset` parsing speed
+  * perf: improve `Accept-Encoding` parsing speed
+  * perf: improve `Accept-Language` parsing speed
 
-1.3.1 / 2016-11-11
+0.6.0 / 2015-09-29
 ==================
 
-  * Fix return type in JSDoc
-
-1.3.0 / 2016-05-17
-==================
-
-  * Add `421 Misdirected Request`
+  * Fix including type extensions in parameters in `Accept` parsing
+  * Fix parsing `Accept` parameters with quoted equals
+  * Fix parsing `Accept` parameters with quoted semicolons
+  * Lazy-load modules from main entry point
+  * perf: delay type concatenation until needed
   * perf: enable strict mode
+  * perf: hoist regular expressions
+  * perf: remove closures getting spec properties
+  * perf: remove a closure from media type parsing
+  * perf: remove property delete from media type parsing
 
-1.2.1 / 2015-02-01
+0.5.3 / 2015-05-10
 ==================
 
-  * Fix message for status 451
-    - `451 Unavailable For Legal Reasons`
+  * Fix media type parameter matching to be case-insensitive
 
-1.2.0 / 2014-09-28
+0.5.2 / 2015-05-06
 ==================
 
-  * Add `208 Already Repored`
-  * Add `226 IM Used`
-  * Add `306 (Unused)`
-  * Add `415 Unable For Legal Reasons`
-  * Add `508 Loop Detected`
+  * Fix comparing media types with quoted values
+  * Fix splitting media types with quoted commas
 
-1.1.1 / 2014-09-24
+0.5.1 / 2015-02-14
 ==================
 
-  * Add missing 308 to `codes.json`
+  * Fix preference sorting to be stable for long acceptable lists
 
-1.1.0 / 2014-09-21
+0.5.0 / 2014-12-18
 ==================
 
-  * Add `codes.json` for universal support
+  * Fix list return order when large accepted list
+  * Fix missing identity encoding when q=0 exists
+  * Remove dynamic building of Negotiator class
 
-1.0.4 / 2014-08-20
+0.4.9 / 2014-10-14
 ==================
 
-  * Package cleanup
+  * Fix error when media type has invalid parameter
 
-1.0.3 / 2014-06-08
+0.4.8 / 2014-09-28
 ==================
 
-  * Add 308 to `.redirect` category
+  * Fix all negotiations to be case-insensitive
+  * Stable sort preferences of same quality according to client order
+  * Support Node.js 0.6
 
-1.0.2 / 2014-03-13
+0.4.7 / 2014-06-24
 ==================
 
-  * Add `.retry` category
+  * Handle invalid provided languages
+  * Handle invalid provided media types
 
-1.0.1 / 2014-03-12
+0.4.6 / 2014-06-11
 ==================
 
-  * Initial release
+  *  Order by specificity when quality is the same
+
+0.4.5 / 2014-05-29
+==================
+
+  * Fix regression in empty header handling
+
+0.4.4 / 2014-05-29
+==================
+
+  * Fix behaviors when headers are not present
+
+0.4.3 / 2014-04-16
+==================
+
+  * Handle slashes on media params correctly
+
+0.4.2 / 2014-02-28
+==================
+
+  * Fix media type sorting
+  * Handle media types params strictly
+
+0.4.1 / 2014-01-16
+==================
+
+  * Use most specific matches
+
+0.4.0 / 2014-01-09
+==================
+
+  * Remove preferred prefix from methods
