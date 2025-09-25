@@ -1,77 +1,136 @@
 /*!
- * depd
- * Copyright(c) 2015 Douglas Christopher Wilson
+ * fresh
+ * Copyright(c) 2012 TJ Holowaychuk
+ * Copyright(c) 2016-2017 Douglas Christopher Wilson
  * MIT Licensed
  */
 
 'use strict'
 
 /**
+ * RegExp to check for no-cache token in Cache-Control.
+ * @private
+ */
+
+var CACHE_CONTROL_NO_CACHE_REGEXP = /(?:^|,)\s*?no-cache\s*?(?:,|$)/
+
+/**
  * Module exports.
  * @public
  */
 
-module.exports = depd
+module.exports = fresh
 
 /**
- * Create deprecate for namespace in caller.
+ * Check freshness of the response using request and response headers.
+ *
+ * @param {Object} reqHeaders
+ * @param {Object} resHeaders
+ * @return {Boolean}
+ * @public
  */
 
-function depd (namespace) {
-  if (!namespace) {
-    throw new TypeError('argument namespace is required')
+function fresh (reqHeaders, resHeaders) {
+  // fields
+  var modifiedSince = reqHeaders['if-modified-since']
+  var noneMatch = reqHeaders['if-none-match']
+
+  // unconditional request
+  if (!modifiedSince && !noneMatch) {
+    return false
   }
 
-  function deprecate (message) {
-    // no-op in browser
+  // Always return stale when Cache-Control: no-cache
+  // to support end-to-end reload requests
+  // https://tools.ietf.org/html/rfc2616#section-14.9.4
+  var cacheControl = reqHeaders['cache-control']
+  if (cacheControl && CACHE_CONTROL_NO_CACHE_REGEXP.test(cacheControl)) {
+    return false
   }
 
-  deprecate._file = undefined
-  deprecate._ignored = true
-  deprecate._namespace = namespace
-  deprecate._traced = false
-  deprecate._warned = Object.create(null)
+  // if-none-match takes precedent over if-modified-since
+  if (noneMatch) {
+    if (noneMatch === '*') {
+      return true
+    }
+    var etag = resHeaders.etag
 
-  deprecate.function = wrapfunction
-  deprecate.property = wrapproperty
+    if (!etag) {
+      return false
+    }
 
-  return deprecate
+    var matches = parseTokenList(noneMatch)
+    for (var i = 0; i < matches.length; i++) {
+      var match = matches[i]
+      if (match === etag || match === 'W/' + etag || 'W/' + match === etag) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  // if-modified-since
+  if (modifiedSince) {
+    var lastModified = resHeaders['last-modified']
+    var modifiedStale = !lastModified || !(parseHttpDate(lastModified) <= parseHttpDate(modifiedSince))
+
+    if (modifiedStale) {
+      return false
+    }
+  }
+
+  return true
 }
 
 /**
- * Return a wrapped function in a deprecation message.
+ * Parse an HTTP Date into a number.
  *
- * This is a no-op version of the wrapper, which does nothing but call
- * validation.
+ * @param {string} date
+ * @private
  */
 
-function wrapfunction (fn, message) {
-  if (typeof fn !== 'function') {
-    throw new TypeError('argument fn must be a function')
-  }
+function parseHttpDate (date) {
+  var timestamp = date && Date.parse(date)
 
-  return fn
+  // istanbul ignore next: guard against date.js Date.parse patching
+  return typeof timestamp === 'number'
+    ? timestamp
+    : NaN
 }
 
 /**
- * Wrap property in a deprecation message.
+ * Parse a HTTP token list.
  *
- * This is a no-op version of the wrapper, which does nothing but call
- * validation.
+ * @param {string} str
+ * @private
  */
 
-function wrapproperty (obj, prop, message) {
-  if (!obj || (typeof obj !== 'object' && typeof obj !== 'function')) {
-    throw new TypeError('argument obj must be object')
+function parseTokenList (str) {
+  var end = 0
+  var list = []
+  var start = 0
+
+  // gather tokens
+  for (var i = 0, len = str.length; i < len; i++) {
+    switch (str.charCodeAt(i)) {
+      case 0x20: /*   */
+        if (start === end) {
+          start = end = i + 1
+        }
+        break
+      case 0x2c: /* , */
+        list.push(str.substring(start, end))
+        start = end = i + 1
+        break
+      default:
+        end = i + 1
+        break
+    }
   }
 
-  var descriptor = Object.getOwnPropertyDescriptor(obj, prop)
+  // final token
+  list.push(str.substring(start, end))
 
-  if (!descriptor) {
-    throw new TypeError('must call property on owner object')
-  }
-
-  if (!descriptor.configurable) {
-    throw new TypeError('property must be configurable')
-  }
+  return list
 }

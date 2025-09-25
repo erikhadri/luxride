@@ -1,54 +1,57 @@
-# dunder-proto <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
+# forwarded
 
-[![github actions][actions-image]][actions-url]
-[![coverage][codecov-image]][codecov-url]
-[![License][license-image]][license-url]
-[![Downloads][downloads-image]][downloads-url]
+[![NPM Version][npm-image]][npm-url]
+[![NPM Downloads][downloads-image]][downloads-url]
+[![Node.js Version][node-version-image]][node-version-url]
+[![Build Status][ci-image]][ci-url]
+[![Test Coverage][coveralls-image]][coveralls-url]
 
-[![npm badge][npm-badge-png]][package-url]
+Parse HTTP X-Forwarded-For header
 
-If available, the `Object.prototype.__proto__` accessor and mutator, call-bound.
+## Installation
 
-## Getting started
+This is a [Node.js](https://nodejs.org/en/) module available through the
+[npm registry](https://www.npmjs.com/). Installation is done using the
+[`npm install` command](https://docs.npmjs.com/getting-started/installing-npm-packages-locally):
 
 ```sh
-npm install --save dunder-proto
+$ npm install forwarded
 ```
 
-## Usage/Examples
+## API
 
 ```js
-const assert = require('assert');
-const getDunder = require('dunder-proto/get');
-const setDunder = require('dunder-proto/set');
-
-const obj = {};
-
-assert.equal('toString' in obj, true);
-assert.equal(getDunder(obj), Object.prototype);
-
-setDunder(obj, null);
-
-assert.equal('toString' in obj, false);
-assert.equal(getDunder(obj), null);
+var forwarded = require('forwarded')
 ```
 
-## Tests
+### forwarded(req)
 
-Clone the repo, `npm install`, and run `npm test`
+```js
+var addresses = forwarded(req)
+```
 
-[package-url]: https://npmjs.org/package/dunder-proto
-[npm-version-svg]: https://versionbadg.es/es-shims/dunder-proto.svg
-[deps-svg]: https://david-dm.org/es-shims/dunder-proto.svg
-[deps-url]: https://david-dm.org/es-shims/dunder-proto
-[dev-deps-svg]: https://david-dm.org/es-shims/dunder-proto/dev-status.svg
-[dev-deps-url]: https://david-dm.org/es-shims/dunder-proto#info=devDependencies
-[npm-badge-png]: https://nodei.co/npm/dunder-proto.png?downloads=true&stars=true
-[license-image]: https://img.shields.io/npm/l/dunder-proto.svg
-[license-url]: LICENSE
-[downloads-image]: https://img.shields.io/npm/dm/dunder-proto.svg
-[downloads-url]: https://npm-stat.com/charts.html?package=dunder-proto
-[codecov-image]: https://codecov.io/gh/es-shims/dunder-proto/branch/main/graphs/badge.svg
-[codecov-url]: https://app.codecov.io/gh/es-shims/dunder-proto/
-[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/es-shims/dunder-proto
-[actions-url]: https://github.com/es-shims/dunder-proto/actions
+Parse the `X-Forwarded-For` header from the request. Returns an array
+of the addresses, including the socket address for the `req`, in reverse
+order (i.e. index `0` is the socket address and the last index is the
+furthest address, typically the end-user).
+
+## Testing
+
+```sh
+$ npm test
+```
+
+## License
+
+[MIT](LICENSE)
+
+[ci-image]: https://badgen.net/github/checks/jshttp/forwarded/master?label=ci
+[ci-url]: https://github.com/jshttp/forwarded/actions?query=workflow%3Aci
+[npm-image]: https://img.shields.io/npm/v/forwarded.svg
+[npm-url]: https://npmjs.org/package/forwarded
+[node-version-image]: https://img.shields.io/node/v/forwarded.svg
+[node-version-url]: https://nodejs.org/en/download/
+[coveralls-image]: https://img.shields.io/coveralls/jshttp/forwarded/master.svg
+[coveralls-url]: https://coveralls.io/r/jshttp/forwarded?branch=master
+[downloads-image]: https://img.shields.io/npm/dm/forwarded.svg
+[downloads-url]: https://npmjs.org/package/forwarded
