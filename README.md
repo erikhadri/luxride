@@ -1,54 +1,46 @@
-# dunder-proto <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
+# function-bind <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
 
 [![github actions][actions-image]][actions-url]
-[![coverage][codecov-image]][codecov-url]
+<!--[![coverage][codecov-image]][codecov-url]-->
+[![dependency status][deps-svg]][deps-url]
+[![dev dependency status][dev-deps-svg]][dev-deps-url]
 [![License][license-image]][license-url]
 [![Downloads][downloads-image]][downloads-url]
 
 [![npm badge][npm-badge-png]][package-url]
 
-If available, the `Object.prototype.__proto__` accessor and mutator, call-bound.
+Implementation of function.prototype.bind
 
-## Getting started
+Old versions of phantomjs, Internet Explorer < 9, and node < 0.6 don't support `Function.prototype.bind`.
 
-```sh
-npm install --save dunder-proto
-```
-
-## Usage/Examples
+## Example
 
 ```js
-const assert = require('assert');
-const getDunder = require('dunder-proto/get');
-const setDunder = require('dunder-proto/set');
-
-const obj = {};
-
-assert.equal('toString' in obj, true);
-assert.equal(getDunder(obj), Object.prototype);
-
-setDunder(obj, null);
-
-assert.equal('toString' in obj, false);
-assert.equal(getDunder(obj), null);
+Function.prototype.bind = require("function-bind")
 ```
 
-## Tests
+## Installation
 
-Clone the repo, `npm install`, and run `npm test`
+`npm install function-bind`
 
-[package-url]: https://npmjs.org/package/dunder-proto
-[npm-version-svg]: https://versionbadg.es/es-shims/dunder-proto.svg
-[deps-svg]: https://david-dm.org/es-shims/dunder-proto.svg
-[deps-url]: https://david-dm.org/es-shims/dunder-proto
-[dev-deps-svg]: https://david-dm.org/es-shims/dunder-proto/dev-status.svg
-[dev-deps-url]: https://david-dm.org/es-shims/dunder-proto#info=devDependencies
-[npm-badge-png]: https://nodei.co/npm/dunder-proto.png?downloads=true&stars=true
-[license-image]: https://img.shields.io/npm/l/dunder-proto.svg
+## Contributors
+
+ - Raynos
+
+## MIT Licenced
+
+[package-url]: https://npmjs.org/package/function-bind
+[npm-version-svg]: https://versionbadg.es/Raynos/function-bind.svg
+[deps-svg]: https://david-dm.org/Raynos/function-bind.svg
+[deps-url]: https://david-dm.org/Raynos/function-bind
+[dev-deps-svg]: https://david-dm.org/Raynos/function-bind/dev-status.svg
+[dev-deps-url]: https://david-dm.org/Raynos/function-bind#info=devDependencies
+[npm-badge-png]: https://nodei.co/npm/function-bind.png?downloads=true&stars=true
+[license-image]: https://img.shields.io/npm/l/function-bind.svg
 [license-url]: LICENSE
-[downloads-image]: https://img.shields.io/npm/dm/dunder-proto.svg
-[downloads-url]: https://npm-stat.com/charts.html?package=dunder-proto
-[codecov-image]: https://codecov.io/gh/es-shims/dunder-proto/branch/main/graphs/badge.svg
-[codecov-url]: https://app.codecov.io/gh/es-shims/dunder-proto/
-[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/es-shims/dunder-proto
-[actions-url]: https://github.com/es-shims/dunder-proto/actions
+[downloads-image]: https://img.shields.io/npm/dm/function-bind.svg
+[downloads-url]: https://npm-stat.com/charts.html?package=function-bind
+[codecov-image]: https://codecov.io/gh/Raynos/function-bind/branch/main/graphs/badge.svg
+[codecov-url]: https://app.codecov.io/gh/Raynos/function-bind/
+[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/Raynos/function-bind
+[actions-url]: https://github.com/Raynos/function-bind/actions
