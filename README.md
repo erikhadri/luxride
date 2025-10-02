@@ -1,42 +1,62 @@
-Browser-friendly inheritance fully compatible with standard node.js
-[inherits](http://nodejs.org/api/util.html#util_util_inherits_constructor_superconstructor).
+# side-channel-weakmap <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
 
-This package exports standard `inherits` from node.js `util` module in
-node environment, but also provides alternative browser-friendly
-implementation through [browser
-field](https://gist.github.com/shtylman/4339901). Alternative
-implementation is a literal copy of standard one located in standalone
-module to avoid requiring of `util`. It also has a shim for old
-browsers with no `Object.create` support.
+[![github actions][actions-image]][actions-url]
+[![coverage][codecov-image]][codecov-url]
+[![License][license-image]][license-url]
+[![Downloads][downloads-image]][downloads-url]
 
-While keeping you sure you are using standard `inherits`
-implementation in node.js environment, it allows bundlers such as
-[browserify](https://github.com/substack/node-browserify) to not
-include full `util` package to your client code if all you need is
-just `inherits` function. It worth, because browser shim for `util`
-package is large and `inherits` is often the single function you need
-from it.
+[![npm badge][npm-badge-png]][package-url]
 
-It's recommended to use this package instead of
-`require('util').inherits` for any code that has chances to be used
-not only in node.js but in browser too.
+Store information about any JS value in a side channel. Uses WeakMap if available.
 
-## usage
+Warning: this implementation will leak memory until you `delete` the `key`.
+Use [`side-channel`](https://npmjs.com/side-channel) for the best available strategy.
 
-```js
-var inherits = require('inherits');
-// then use exactly as the standard one
+## Getting started
+
+```sh
+npm install --save side-channel-weakmap
 ```
 
-## note on version ~1.0
+## Usage/Examples
 
-Version ~1.0 had completely different motivation and is not compatible
-neither with 2.0 nor with standard node.js `inherits`.
+```js
+const assert = require('assert');
+const getSideChannelList = require('side-channel-weakmap');
 
-If you are using version ~1.0 and planning to switch to ~2.0, be
-careful:
+const channel = getSideChannelList();
 
-* new version uses `super_` instead of `super` for referencing
-  superclass
-* new version overwrites current prototype while old one preserves any
-  existing fields on it
+const key = {};
+assert.equal(channel.has(key), false);
+assert.throws(() => channel.assert(key), TypeError);
+
+channel.set(key, 42);
+
+channel.assert(key); // does not throw
+assert.equal(channel.has(key), true);
+assert.equal(channel.get(key), 42);
+
+channel.delete(key);
+assert.equal(channel.has(key), false);
+assert.throws(() => channel.assert(key), TypeError);
+```
+
+## Tests
+
+Clone the repo, `npm install`, and run `npm test`
+
+[package-url]: https://npmjs.org/package/side-channel-weakmap
+[npm-version-svg]: https://versionbadg.es/ljharb/side-channel-weakmap.svg
+[deps-svg]: https://david-dm.org/ljharb/side-channel-weakmap.svg
+[deps-url]: https://david-dm.org/ljharb/side-channel-weakmap
+[dev-deps-svg]: https://david-dm.org/ljharb/side-channel-weakmap/dev-status.svg
+[dev-deps-url]: https://david-dm.org/ljharb/side-channel-weakmap#info=devDependencies
+[npm-badge-png]: https://nodei.co/npm/side-channel-weakmap.png?downloads=true&stars=true
+[license-image]: https://img.shields.io/npm/l/side-channel-weakmap.svg
+[license-url]: LICENSE
+[downloads-image]: https://img.shields.io/npm/dm/side-channel-weakmap.svg
+[downloads-url]: https://npm-stat.com/charts.html?package=side-channel-weakmap
+[codecov-image]: https://codecov.io/gh/ljharb/side-channel-weakmap/branch/main/graphs/badge.svg
+[codecov-url]: https://app.codecov.io/gh/ljharb/side-channel-weakmap/
+[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/ljharb/side-channel-weakmap
+[actions-url]: https://github.com/ljharb/side-channel-weakmap/actions
