@@ -1,46 +1,42 @@
-# function-bind <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
+Browser-friendly inheritance fully compatible with standard node.js
+[inherits](http://nodejs.org/api/util.html#util_util_inherits_constructor_superconstructor).
 
-[![github actions][actions-image]][actions-url]
-<!--[![coverage][codecov-image]][codecov-url]-->
-[![dependency status][deps-svg]][deps-url]
-[![dev dependency status][dev-deps-svg]][dev-deps-url]
-[![License][license-image]][license-url]
-[![Downloads][downloads-image]][downloads-url]
+This package exports standard `inherits` from node.js `util` module in
+node environment, but also provides alternative browser-friendly
+implementation through [browser
+field](https://gist.github.com/shtylman/4339901). Alternative
+implementation is a literal copy of standard one located in standalone
+module to avoid requiring of `util`. It also has a shim for old
+browsers with no `Object.create` support.
 
-[![npm badge][npm-badge-png]][package-url]
+While keeping you sure you are using standard `inherits`
+implementation in node.js environment, it allows bundlers such as
+[browserify](https://github.com/substack/node-browserify) to not
+include full `util` package to your client code if all you need is
+just `inherits` function. It worth, because browser shim for `util`
+package is large and `inherits` is often the single function you need
+from it.
 
-Implementation of function.prototype.bind
+It's recommended to use this package instead of
+`require('util').inherits` for any code that has chances to be used
+not only in node.js but in browser too.
 
-Old versions of phantomjs, Internet Explorer < 9, and node < 0.6 don't support `Function.prototype.bind`.
-
-## Example
+## usage
 
 ```js
-Function.prototype.bind = require("function-bind")
+var inherits = require('inherits');
+// then use exactly as the standard one
 ```
 
-## Installation
+## note on version ~1.0
 
-`npm install function-bind`
+Version ~1.0 had completely different motivation and is not compatible
+neither with 2.0 nor with standard node.js `inherits`.
 
-## Contributors
+If you are using version ~1.0 and planning to switch to ~2.0, be
+careful:
 
- - Raynos
-
-## MIT Licenced
-
-[package-url]: https://npmjs.org/package/function-bind
-[npm-version-svg]: https://versionbadg.es/Raynos/function-bind.svg
-[deps-svg]: https://david-dm.org/Raynos/function-bind.svg
-[deps-url]: https://david-dm.org/Raynos/function-bind
-[dev-deps-svg]: https://david-dm.org/Raynos/function-bind/dev-status.svg
-[dev-deps-url]: https://david-dm.org/Raynos/function-bind#info=devDependencies
-[npm-badge-png]: https://nodei.co/npm/function-bind.png?downloads=true&stars=true
-[license-image]: https://img.shields.io/npm/l/function-bind.svg
-[license-url]: LICENSE
-[downloads-image]: https://img.shields.io/npm/dm/function-bind.svg
-[downloads-url]: https://npm-stat.com/charts.html?package=function-bind
-[codecov-image]: https://codecov.io/gh/Raynos/function-bind/branch/main/graphs/badge.svg
-[codecov-url]: https://app.codecov.io/gh/Raynos/function-bind/
-[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/Raynos/function-bind
-[actions-url]: https://github.com/Raynos/function-bind/actions
+* new version uses `super_` instead of `super` for referencing
+  superclass
+* new version overwrites current prototype while old one preserves any
+  existing fields on it
