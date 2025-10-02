@@ -1,58 +1,87 @@
-2.8.5 / 2018-11-04
+2.0.2 / 2025-06-06
 ==================
 
-  * Fix setting `maxAge` option to `0`
+  * Migrate to `String.prototype.slice()`
 
-2.8.4 / 2017-07-12
+2.0.1 / 2021-01-03
 ==================
 
-  * Work-around Safari bug in default pre-flight response
+  * Fix returning values from `Object.prototype`
 
-2.8.3 / 2017-03-29
+2.0.0 / 2020-04-19
 ==================
 
-  * Fix error when options delegate missing `methods` option
+  * Drop support for Node.js 0.6
+  * Fix messaging casing of `418 I'm a Teapot`
+  * Remove code 306
+  * Remove `status[code]` exports; use `status.message[code]`
+  * Remove `status[msg]` exports; use `status.code[msg]`
+  * Rename `425 Unordered Collection` to standard `425 Too Early`
+  * Rename `STATUS_CODES` export to `message`
+  * Return status message for `statuses(code)` when given code
 
-2.8.2 / 2017-03-28
+1.5.0 / 2018-03-27
 ==================
 
-  * Fix error when frozen options are passed
-  * Send "Vary: Origin" when using regular expressions
-  * Send "Vary: Access-Control-Request-Headers" when dynamic `allowedHeaders`
+  * Add `103 Early Hints`
 
-2.8.1 / 2016-09-08
+1.4.0 / 2017-10-20
 ==================
 
-This release only changed documentation.
+  * Add `STATUS_CODES` export
 
-2.8.0 / 2016-08-23
+1.3.1 / 2016-11-11
 ==================
 
-  * Add `optionsSuccessStatus` option
+  * Fix return type in JSDoc
 
-2.7.2 / 2016-08-23
+1.3.0 / 2016-05-17
 ==================
 
-  * Fix error when Node.js running in strict mode
+  * Add `421 Misdirected Request`
+  * perf: enable strict mode
 
-2.7.1 / 2015-05-28
+1.2.1 / 2015-02-01
 ==================
 
-  * Move module into expressjs organization
+  * Fix message for status 451
+    - `451 Unavailable For Legal Reasons`
 
-2.7.0 / 2015-05-28
+1.2.0 / 2014-09-28
 ==================
 
-  * Allow array of matching condition as `origin` option
-  * Allow regular expression as `origin` option
+  * Add `208 Already Repored`
+  * Add `226 IM Used`
+  * Add `306 (Unused)`
+  * Add `415 Unable For Legal Reasons`
+  * Add `508 Loop Detected`
 
-2.6.1 / 2015-05-28
+1.1.1 / 2014-09-24
 ==================
 
-  * Update `license` in package.json
+  * Add missing 308 to `codes.json`
 
-2.6.0 / 2015-04-27
+1.1.0 / 2014-09-21
 ==================
 
-  * Add `preflightContinue` option
-  * Fix "Vary: Origin" header added for "*"
+  * Add `codes.json` for universal support
+
+1.0.4 / 2014-08-20
+==================
+
+  * Package cleanup
+
+1.0.3 / 2014-06-08
+==================
+
+  * Add 308 to `.redirect` category
+
+1.0.2 / 2014-03-13
+==================
+
+  * Add `.retry` category
+
+1.0.1 / 2014-03-12
+==================
+
+  * Initial release
