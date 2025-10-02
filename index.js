@@ -1,84 +1,95 @@
-'use strict';
+/*!
+ * ee-first
+ * Copyright(c) 2014 Jonathan Ong
+ * MIT Licensed
+ */
 
-var GetIntrinsic = require('get-intrinsic');
-var callBound = require('call-bound');
-var inspect = require('object-inspect');
-var getSideChannelMap = require('side-channel-map');
+'use strict'
 
-var $TypeError = require('es-errors/type');
-var $WeakMap = GetIntrinsic('%WeakMap%', true);
+/**
+ * Module exports.
+ * @public
+ */
 
-/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => V} */
-var $weakMapGet = callBound('WeakMap.prototype.get', true);
-/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K, value: V) => void} */
-var $weakMapSet = callBound('WeakMap.prototype.set', true);
-/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */
-var $weakMapHas = callBound('WeakMap.prototype.has', true);
-/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */
-var $weakMapDelete = callBound('WeakMap.prototype.delete', true);
+module.exports = first
 
-/** @type {import('.')} */
-module.exports = $WeakMap
-	? /** @type {Exclude<import('.'), false>} */ function getSideChannelWeakMap() {
-		/** @typedef {ReturnType<typeof getSideChannelWeakMap>} Channel */
-		/** @typedef {Parameters<Channel['get']>[0]} K */
-		/** @typedef {Parameters<Channel['set']>[1]} V */
+/**
+ * Get the first event in a set of event emitters and event pairs.
+ *
+ * @param {array} stuff
+ * @param {function} done
+ * @public
+ */
 
-		/** @type {WeakMap<K & object, V> | undefined} */ var $wm;
-		/** @type {Channel | undefined} */ var $m;
+function first(stuff, done) {
+  if (!Array.isArray(stuff))
+    throw new TypeError('arg must be an array of [ee, events...] arrays')
 
-		/** @type {Channel} */
-		var channel = {
-			assert: function (key) {
-				if (!channel.has(key)) {
-					throw new $TypeError('Side channel does not contain ' + inspect(key));
-				}
-			},
-			'delete': function (key) {
-				if ($WeakMap && key && (typeof key === 'object' || typeof key === 'function')) {
-					if ($wm) {
-						return $weakMapDelete($wm, key);
-					}
-				} else if (getSideChannelMap) {
-					if ($m) {
-						return $m['delete'](key);
-					}
-				}
-				return false;
-			},
-			get: function (key) {
-				if ($WeakMap && key && (typeof key === 'object' || typeof key === 'function')) {
-					if ($wm) {
-						return $weakMapGet($wm, key);
-					}
-				}
-				return $m && $m.get(key);
-			},
-			has: function (key) {
-				if ($WeakMap && key && (typeof key === 'object' || typeof key === 'function')) {
-					if ($wm) {
-						return $weakMapHas($wm, key);
-					}
-				}
-				return !!$m && $m.has(key);
-			},
-			set: function (key, value) {
-				if ($WeakMap && key && (typeof key === 'object' || typeof key === 'function')) {
-					if (!$wm) {
-						$wm = new $WeakMap();
-					}
-					$weakMapSet($wm, key, value);
-				} else if (getSideChannelMap) {
-					if (!$m) {
-						$m = getSideChannelMap();
-					}
-					// eslint-disable-next-line no-extra-parens
-					/** @type {NonNullable<typeof $m>} */ ($m).set(key, value);
-				}
-			}
-		};
+  var cleanups = []
 
-		// @ts-expect-error TODO: figure out why this is erroring
-		return channel;
-	}
-	: getSideChannelMap;
+  for (var i = 0; i < stuff.length; i++) {
+    var arr = stuff[i]
+
+    if (!Array.isArray(arr) || arr.length < 2)
+      throw new TypeError('each array member must be [ee, events...]')
+
+    var ee = arr[0]
+
+    for (var j = 1; j < arr.length; j++) {
+      var event = arr[j]
+      var fn = listener(event, callback)
+
+      // listen to the event
+      ee.on(event, fn)
+      // push this listener to the list of cleanups
+      cleanups.push({
+        ee: ee,
+        event: event,
+        fn: fn,
+      })
+    }
+  }
+
+  function callback() {
+    cleanup()
+    done.apply(null, arguments)
+  }
+
+  function cleanup() {
+    var x
+    for (var i = 0; i < cleanups.length; i++) {
+      x = cleanups[i]
+      x.ee.removeListener(x.event, x.fn)
+    }
+  }
+
+  function thunk(fn) {
+    done = fn
+  }
+
+  thunk.cancel = cleanup
+
+  return thunk
+}
+
+/**
+ * Create the event listener.
+ * @private
+ */
+
+function listener(event, done) {
+  return function onevent(arg1) {
+    var args = new Array(arguments.length)
+    var ee = this
+    var err = event === 'error'
+      ? arg1
+      : null
+
+    // copy args to prevent arguments escaping scope
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i]
+    }
+
+    done(err, ee, event, args)
+  }
+}
