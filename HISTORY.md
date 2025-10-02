@@ -1,87 +1,58 @@
-2.0.2 / 2025-06-06
+2.8.5 / 2018-11-04
 ==================
 
-  * Migrate to `String.prototype.slice()`
+  * Fix setting `maxAge` option to `0`
 
-2.0.1 / 2021-01-03
+2.8.4 / 2017-07-12
 ==================
 
-  * Fix returning values from `Object.prototype`
+  * Work-around Safari bug in default pre-flight response
 
-2.0.0 / 2020-04-19
+2.8.3 / 2017-03-29
 ==================
 
-  * Drop support for Node.js 0.6
-  * Fix messaging casing of `418 I'm a Teapot`
-  * Remove code 306
-  * Remove `status[code]` exports; use `status.message[code]`
-  * Remove `status[msg]` exports; use `status.code[msg]`
-  * Rename `425 Unordered Collection` to standard `425 Too Early`
-  * Rename `STATUS_CODES` export to `message`
-  * Return status message for `statuses(code)` when given code
+  * Fix error when options delegate missing `methods` option
 
-1.5.0 / 2018-03-27
+2.8.2 / 2017-03-28
 ==================
 
-  * Add `103 Early Hints`
+  * Fix error when frozen options are passed
+  * Send "Vary: Origin" when using regular expressions
+  * Send "Vary: Access-Control-Request-Headers" when dynamic `allowedHeaders`
 
-1.4.0 / 2017-10-20
+2.8.1 / 2016-09-08
 ==================
 
-  * Add `STATUS_CODES` export
+This release only changed documentation.
 
-1.3.1 / 2016-11-11
+2.8.0 / 2016-08-23
 ==================
 
-  * Fix return type in JSDoc
+  * Add `optionsSuccessStatus` option
 
-1.3.0 / 2016-05-17
+2.7.2 / 2016-08-23
 ==================
 
-  * Add `421 Misdirected Request`
-  * perf: enable strict mode
+  * Fix error when Node.js running in strict mode
 
-1.2.1 / 2015-02-01
+2.7.1 / 2015-05-28
 ==================
 
-  * Fix message for status 451
-    - `451 Unavailable For Legal Reasons`
+  * Move module into expressjs organization
 
-1.2.0 / 2014-09-28
+2.7.0 / 2015-05-28
 ==================
 
-  * Add `208 Already Repored`
-  * Add `226 IM Used`
-  * Add `306 (Unused)`
-  * Add `415 Unable For Legal Reasons`
-  * Add `508 Loop Detected`
+  * Allow array of matching condition as `origin` option
+  * Allow regular expression as `origin` option
 
-1.1.1 / 2014-09-24
+2.6.1 / 2015-05-28
 ==================
 
-  * Add missing 308 to `codes.json`
+  * Update `license` in package.json
 
-1.1.0 / 2014-09-21
+2.6.0 / 2015-04-27
 ==================
 
-  * Add `codes.json` for universal support
-
-1.0.4 / 2014-08-20
-==================
-
-  * Package cleanup
-
-1.0.3 / 2014-06-08
-==================
-
-  * Add 308 to `.redirect` category
-
-1.0.2 / 2014-03-13
-==================
-
-  * Add `.retry` category
-
-1.0.1 / 2014-03-12
-==================
-
-  * Initial release
+  * Add `preflightContinue` option
+  * Fix "Vary: Origin" header added for "*"
